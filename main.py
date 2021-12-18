@@ -278,12 +278,13 @@ def new_nf_itens(id_nf):
         conexao_db.novo_item_nf(tipo, id_nf, id_produto, quantidade, valor)
 
 
+
 @app.route('/nf/<int:id>/itens/', methods=['GET'])
 def get_Itens_Nf(id):
     itens = conexao_db.get_itens_nf(id)
     itens = [Item_NF.toJson() for Item_NF in itens]
     return json.dumps(itens)
 
-
+#create Database
 conexao_db.create_data_base()
 app.run()

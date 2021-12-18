@@ -157,14 +157,14 @@ def novo_Banco(codigobancario,  nomebanco, agencia,  conta,  endereco, bairro, m
 
 def novo_Cliente(nome,  cpf, logradouro, bairro, municipio, estado, cep, telefone,  email):
     cursor = concect.cursor()
-    novoRegistro = "insert into Cliente(nome, cpf,  logradouro, bairro, municipio, estado, cep, telefone, email) values ('"+nome+"', '"+cpf+"', '"+logradouro+"', '"+bairro+"', '"+municipio+"', '"+estado+"', '"+cep+"', '"+telefone+"', '"+email+"', '"+str(saldo)+"') "
+    novoRegistro = "insert into Cliente(nome, cpf,  logradouro, bairro, municipio, estado, cep, telefone, email) values ('"+nome+"', '"+cpf+"', '"+logradouro+"', '"+bairro+"', '"+municipio+"', '"+estado+"', '"+cep+"', '"+telefone+"', '"+email+"') "
     cursor.execute(novoRegistro)
     concect.commit()
     cursor.close()
 
 def novo_Fornecedor(razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, bairro, municipio, estado, cep, telefone,  email):
     cursor = concect.cursor()
-    novoRegistro = "insert into Fornecedor(razao_social, nome_fantasia, cnpj, inscricao_estaudal,  logradouro, bairro, municipio, estado, cep, telefone, email, saldo) values ('"+razao_social+"', "+nome_fantasia+"', "+cnpj+"', "+inscricao_estadual+", '"+logradouro+", '"+bairro+", '"+municipio+", '"+estado+", '"+cep+", '"+telefone+", '"+email+", '"+str(saldo)+"') "
+    novoRegistro = "insert into Fornecedor(razao_social, nome_fantasia, cnpj, inscricao_estaudal,  logradouro, bairro, municipio, estado, cep, telefone, email, saldo) values ('"+razao_social+"', "+nome_fantasia+"', "+cnpj+"', "+inscricao_estadual+", '"+logradouro+", '"+bairro+", '"+municipio+", '"+estado+", '"+cep+", '"+telefone+", '"+email+") "
     cursor.execute(novoRegistro)
     concect.commit()
     cursor.close()
@@ -208,7 +208,7 @@ def editar_Cliente(id, nome,  cpf, logradouro, bairro, municipio, estado, cep, t
 
 def editar_Fornecedor(id, razao_social, nome_fantasia, cnpj, inscricao_estadual, logradouro, bairro, municipio, estado, cep, telefone,  email):
     cursor = concect.cursor()
-    novoRegistro = "UPDATE Fornecedor SET razao_social='"+razao_social+"', nome_fantasia='"+nome_fantasia+"', cnpj='"+cnpj+"', inscricao_estaudal='"+inscricao_estadual+"',  logradouro='"+logradouro+"', bairro='"+bairro+"', municipio='"+municipio+"', estado='"+estado+"', cep='"+cep+"', telefone='"+telefone+"', email='"+email+"', saldo='"+saldo+"' where  id="+id+""
+    novoRegistro = "UPDATE Fornecedor SET razao_social='"+razao_social+"', nome_fantasia='"+nome_fantasia+"', cnpj='"+cnpj+"', inscricao_estaudal='"+inscricao_estadual+"',  logradouro='"+logradouro+"', bairro='"+bairro+"', municipio='"+municipio+"', estado='"+estado+"', cep='"+cep+"', telefone='"+telefone+"', email='"+email+"' where  id="+id+""
     cursor.execute(novoRegistro)
     concect.commit()
     cursor.close()
@@ -225,7 +225,7 @@ def editar_estoque(id, descricao):
 def novo_saldo_inicial_estoque(id_estoque, id_produto,  saldo_inicial=0):
     if get_saldo_estoque_by_estoque_e_produto(id_produto, id_estoque) is None:
         cursor = concect.cursor()
-        novoRegistro = "insert into saldo_estoque(produto, estoque,  saldo) values ('" + produto + "', '"+estoque+"', "+str(saldo_inicial)+") "
+        novoRegistro = "insert into saldo_estoque(produto, estoque,  saldo) values ('" + id_produto + "', '"+id_estoque+"', "+str(saldo_inicial)+") "
         cursor.execute(novoRegistro)
         concect.commit()
         cursor.close()
@@ -268,8 +268,8 @@ def alterar_saldo_bancario(id_banco, tipo, valor):
         if tipo=='E':
             novo_saldo = banco.saldo+valor
         if tipo=='S':
-            if banco.saldo >= quantidade:
-                novo_saldo=banco.saldo-quantidade
+            if banco.saldo >= valor:
+                novo_saldo=banco.saldo-valor
             else:
                 return False
         else:
@@ -313,7 +313,7 @@ def novo_item_nf(tipo, id_cabecalho,id_produto, id_estoque, quantidade,  valor):
     return False
 
 def nova_venda(id_cliente, total ):
-    if get_fornecedor_by_id(id_fornecedor):
+    if get_cliente_by_id(id_cliente):
         cursor = concect.cursor()
         cursor.execute("insert into venda(cliente, total ,data) values ('" + id_cliente + "', '"+total+"', CURRENT_DATE) ")
         concect.commit()
@@ -547,7 +547,7 @@ def get_movimentos_bancario_by_banco(banco):
             Movimento_Bancario(data_manager[0], data_manager[1], data_manager[2], data_manager[3], data_manager[4], data_manager[5]))
         data_manager = cursor.fetchone()
 
-    return lista_saldo
+    return lista_movimentos
 
 def get_movimento_bancario_by_id(id):
     cursor = concect.cursor()
